@@ -3,6 +3,9 @@ const multer = require("multer");
 const authMiddleware = require("../middleware/authMiddleware");
 const router = express.Router();
 
+if (!fs.existsSync("uploads")) {
+   fs.mkdirSync("uploads");
+}
 const storage = multer.diskStorage({
     destination :(req,file,cb) => {
         cb(null,"uploads/");
