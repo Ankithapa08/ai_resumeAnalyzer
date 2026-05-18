@@ -136,13 +136,10 @@ Generate AI Mock Interview Questions
 ## Screenshots
 
 ### Dashboard
-(Add screenshot here)
+![alt text](image.png)
 
 ### Resume Upload
-(Add screenshot here)
-
-### Mock Interview
-(Add screenshot here)
+![alt text](image-1.png)
 
 ---
 
