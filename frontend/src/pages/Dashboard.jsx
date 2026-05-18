@@ -20,7 +20,7 @@ function Dashboard() {
 
             const response = await axios.get(
 
-                "https://ai-resumeanalyzer-epjv.onrender.com/api/dashboard/analyses",
+                "https://ai-resumeanalyzer-epjv.onrender.com/api/dashboard/my-analysis",
 
                 {
                     headers: {
