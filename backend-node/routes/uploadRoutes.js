@@ -1,8 +1,9 @@
 const express = require("express");
 const multer = require("multer");
 const authMiddleware = require("../middleware/authMiddleware");
-const router = express.Router();
+const fs = require("fs");
 
+const router = express.Router();
 if (!fs.existsSync("uploads")) {
    fs.mkdirSync("uploads");
 }
