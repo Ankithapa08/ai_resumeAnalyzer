@@ -6,7 +6,7 @@ const authRoutes = require("./routes/authRoutes");
 const app = express();
 connectDB();
 app.use(cors({
-    origin :"https://ai-resume-analyzer-seven-ochre.vercel.app/",
+    origin :"https://ai-resume-analyzer-seven-ochre.vercel.app",
     credentials: true
 }));
 app.use(express.json());
