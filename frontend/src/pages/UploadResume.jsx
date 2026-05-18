@@ -33,7 +33,7 @@ function UploadResume() {
             formData.append("resume", file);
 
             const response = await axios.post(
-                "https://ai-resumeanalyzer-epjv.onrender.com/api/upload",
+                "https://ai-resumeanalyzer-epjv.onrender.com/api/upload/resume",
                 formData,
                 {
                     headers: {
