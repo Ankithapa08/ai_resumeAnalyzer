@@ -85,21 +85,6 @@ function Home() {
                         Start Interview
                     </button>
 
-                    <button
-                        onClick={testBackend}
-                        className="
-                            bg-green-600
-                            text-white
-                            px-6
-                            py-3
-                            rounded-lg
-                            hover:bg-green-700
-                            transition
-                        "
-                    >
-                        Test Backend
-                    </button>
-
                 </div>
 
             </div>
