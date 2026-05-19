@@ -1,7 +1,10 @@
 import Navbar from "../components/Navbar";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
+
+    const navigate = useNavigate();
 
     const testBackend = async () => {
 
@@ -71,7 +74,11 @@ function Home() {
                     gap-4
                 ">
 
+                    {/* Start Interview */}
                     <button
+                        onClick={() =>
+                            navigate("/mock-interview")
+                        }
                         className="
                             bg-blue-600
                             text-white
