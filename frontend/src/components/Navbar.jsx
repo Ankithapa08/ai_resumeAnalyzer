@@ -12,7 +12,7 @@ function Navbar() {
 
         localStorage.removeItem("token");
 
-        navigate("/login");
+        navigate("/");
 
         window.location.reload();
     };
