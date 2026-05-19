@@ -11,6 +11,8 @@ function Login() {
         password: ""
     });
 
+    const [loading, setLoading] = useState(false);
+
     // Handle input changes
     const handleChange = (e) => {
 
@@ -23,10 +25,21 @@ function Login() {
     // Handle login
     const handleLogin = async () => {
 
+        if (!formData.email || !formData.password) {
+
+            alert("Fill all fields");
+
+            return;
+        }
+
         try {
 
+            setLoading(true);
+
             const response = await axios.post(
+
                 "https://ai-resumeanalyzer-epjv.onrender.com/api/auth/login",
+
                 formData
             );
 
@@ -43,19 +56,46 @@ function Login() {
 
         } catch (error) {
 
-            console.log(error.response.data);
+            console.log(error);
 
-            alert(error.response.data.error);
+            alert(
+                error.response?.data?.error ||
+                "Login failed"
+            );
+
+        } finally {
+
+            setLoading(false);
         }
     };
 
     return (
 
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="
+            min-h-screen
+            bg-gray-100
+            flex
+            items-center
+            justify-center
+            px-4
+        ">
 
-            <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full">
+            <div className="
+                bg-white
+                p-6 sm:p-8
+                rounded-2xl
+                shadow-lg
+                w-full
+                max-w-md
+            ">
 
-                <h1 className="text-3xl font-bold mb-6 text-center">
+                {/* Heading */}
+                <h1 className="
+                    text-2xl sm:text-3xl
+                    font-bold
+                    mb-6
+                    text-center
+                ">
                     Login
                 </h1>
 
@@ -66,7 +106,17 @@ function Login() {
                     placeholder="Enter email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full border p-3 rounded-lg mb-4"
+                    className="
+                        w-full
+                        border
+                        p-3
+                        rounded-lg
+                        mb-4
+                        text-sm sm:text-base
+                        outline-none
+                        focus:ring-2
+                        focus:ring-blue-400
+                    "
                 />
 
                 {/* Password Input */}
@@ -76,18 +126,41 @@ function Login() {
                     placeholder="Enter password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full border p-3 rounded-lg mb-6"
+                    className="
+                        w-full
+                        border
+                        p-3
+                        rounded-lg
+                        mb-6
+                        text-sm sm:text-base
+                        outline-none
+                        focus:ring-2
+                        focus:ring-blue-400
+                    "
                 />
 
                 {/* Login Button */}
                 <button
                     onClick={handleLogin}
-                    className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
+                    className="
+                        w-full
+                        bg-blue-600
+                        text-white
+                        py-3
+                        rounded-lg
+                        hover:bg-blue-700
+                        transition
+                    "
                 >
-                    Login
+                    {
+                        loading
+                            ? "Logging in..."
+                            : "Login"
+                    }
                 </button>
 
             </div>
+
         </div>
     );
 }

@@ -1,31 +1,111 @@
 import Navbar from "../components/Navbar";
 import axios from "axios";
 
-const testBackend = async() => {
-    const response = await axios.get(
-        "http://localhost:5000"
-    );
-    console.log(response.data); 
-}
-<button onClick={testBackend} className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-    Test Backend
-</button>
-function Home(){
+function Home() {
+
+    const testBackend = async () => {
+
+        try {
+
+            const response = await axios.get(
+                "https://ai-resumeanalyzer-epjv.onrender.com"
+            );
+
+            console.log(response.data);
+
+            alert("Backend Connected");
+
+        } catch (error) {
+
+            console.log(error);
+
+            alert("Backend Failed");
+        }
+    };
+
     return (
+
         <div className="min-h-screen bg-gray-100">
-        <Navbar />
-        <div className ="flex flex-col items-center justify-center mt-32">
-        <h1 className= "text-5xl font-bold mb-6">
-            Crack Interview with AI
-        </h1>
-        <p className="text-xl text-gray-600 mb-8 text-center max-w-2xl">
-            Upload your resume, practice AI-generated interview questions, and get smart feedback instantly.
-        </p>
-        <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-            Start Interview
-        </button>
-        </div>
+
+            <Navbar />
+
+            <div className="
+                flex
+                flex-col
+                items-center
+                justify-center
+                text-center
+                px-4
+                mt-24 sm:mt-32
+            ">
+
+                {/* Heading */}
+                <h1 className="
+                    text-3xl
+                    sm:text-5xl
+                    font-bold
+                    mb-6
+                ">
+                    Crack Interview with AI
+                </h1>
+
+                {/* Description */}
+                <p className="
+                    text-base
+                    sm:text-xl
+                    text-gray-600
+                    mb-8
+                    max-w-2xl
+                ">
+                    Upload your resume,
+                    practice AI-generated
+                    interview questions,
+                    and get smart feedback instantly.
+                </p>
+
+                {/* Buttons */}
+                <div className="
+                    flex
+                    flex-col
+                    sm:flex-row
+                    gap-4
+                ">
+
+                    <button
+                        className="
+                            bg-blue-600
+                            text-white
+                            px-6
+                            py-3
+                            rounded-lg
+                            hover:bg-blue-700
+                            transition
+                        "
+                    >
+                        Start Interview
+                    </button>
+
+                    <button
+                        onClick={testBackend}
+                        className="
+                            bg-green-600
+                            text-white
+                            px-6
+                            py-3
+                            rounded-lg
+                            hover:bg-green-700
+                            transition
+                        "
+                    >
+                        Test Backend
+                    </button>
+
+                </div>
+
+            </div>
+
         </div>
     );
 }
+
 export default Home;
