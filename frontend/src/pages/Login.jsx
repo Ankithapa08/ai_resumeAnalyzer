@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Link , useNavigate } from "react-router-dom";
 
 function Login() {
 
@@ -158,7 +159,23 @@ function Login() {
                             : "Login"
                     }
                 </button>
+         {/* Signup Redirect */}
+            <p className="
+               text-center
+               text-sm
+              text-gray-600
+               mt-5">
 
+           Don't have an account?{" "}
+        <Link
+        to="/signup"
+        className="
+            text-blue-600
+            font-semibold
+            hover:underline " >
+           Signup
+      </Link>
+</p>
             </div>
 
         </div>
