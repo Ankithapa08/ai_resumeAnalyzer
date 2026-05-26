@@ -169,7 +169,10 @@ function Navbar() {
                                     >
                                         Upload Resume
                                     </Link>
-                                    <Link to="/chat-resume">
+                                    <Link to="/chat-resume"
+                                    onClick={() =>
+                                            setMenuOpen(false)
+                                        }>
                                        Chat Resume
                                       </Link>
 
