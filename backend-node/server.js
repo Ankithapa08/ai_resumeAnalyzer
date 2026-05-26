@@ -22,6 +22,13 @@ app.use(
     interviewRoutes
 );
 app.use("/api/dashboard", dashboardRoutes);
+const chatRoutes =
+require("./routes/chatRoutes");
+
+app.use(
+   "/api/chat",
+   chatRoutes
+);
 app.get("/",(req,res) =>{
     res.json({
         message:"Backend running successfully"

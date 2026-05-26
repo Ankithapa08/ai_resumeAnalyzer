@@ -169,6 +169,9 @@ function Navbar() {
                                     >
                                         Upload Resume
                                     </Link>
+                                    <Link to="/chat-resume">
+                                       Chat Resume
+                                      </Link>
 
                                     <Link
                                         to="/mock-interview"
