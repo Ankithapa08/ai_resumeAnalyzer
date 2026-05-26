@@ -5,7 +5,6 @@ import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
 import UploadResume from "./pages/UploadResume";
 import MockInterview from "./pages/MockInterview";
-import ChatResume from "./pages/chatResume";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -57,15 +56,6 @@ function App() {
           element={
             <ProtectedRoute>
               <MockInterview />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/chat-resume"
-          element={
-            <ProtectedRoute>
-              <ChatResume />
             </ProtectedRoute>
           }
         />

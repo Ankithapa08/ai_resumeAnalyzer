@@ -11,7 +11,7 @@ const parseResume = async (filePath) => {
 
         // Extract text
         const data =
-            await pdfw(dataBuffer);
+            await pdf(dataBuffer);
 
         return data.text;
 
