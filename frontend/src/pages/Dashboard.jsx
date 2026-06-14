@@ -70,7 +70,7 @@ function Dashboard() {
                     Dashboard
                 </h1>
 
-                {/* Stats */}
+                {/* Stats Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
 
                     <div className="bg-white p-6 rounded-2xl shadow-lg">
@@ -136,27 +136,29 @@ function Dashboard() {
                         </div>
 
                         {/* Upload Date */}
-                        <p className="text-sm text-gray-500 mb-6">
-                            Uploaded on{" "}
-                            {new Date(
-                                latestAnalysis.createdAt
-                            ).toLocaleString()}
-                        </p>
+                        {latestAnalysis.createdAt && (
+                            <p className="text-sm text-gray-500 mb-6">
+                                Uploaded on{" "}
+                                {new Date(
+                                    latestAnalysis.createdAt
+                                ).toLocaleString()}
+                            </p>
+                        )}
 
-                        {/* Legacy Analysis */}
+                        {/* OLD ANALYSIS */}
                         {isLegacyAnalysis && (
                             <div className="bg-yellow-50 border border-yellow-200 p-5 rounded-xl">
                                 <h3 className="text-xl font-bold mb-4">
                                     Legacy Analysis
                                 </h3>
 
-                                <div className="whitespace-pre-wrap text-gray-700 leading-7">
+                                <div className="whitespace-pre-wrap leading-7 text-gray-700">
                                     {latestAnalysis.aiFeedback}
                                 </div>
                             </div>
                         )}
 
-                        {/* New JSON Analysis */}
+                        {/* NEW JSON ANALYSIS */}
                         {!isLegacyAnalysis && feedback && (
                             <div className="space-y-6">
 
@@ -180,7 +182,7 @@ function Dashboard() {
                                         </h3>
 
                                         <p className="text-4xl font-bold text-purple-700">
-                                            {feedback.atsScore}%
+                                            {feedback.atsScore || 0}%
                                         </p>
                                     </div>
 
@@ -190,7 +192,7 @@ function Dashboard() {
                                         </h3>
 
                                         <p className="text-4xl font-bold text-green-700">
-                                            {feedback.jobMatchScore}%
+                                            {feedback.jobMatchScore || 0}%
                                         </p>
                                     </div>
 
@@ -253,7 +255,6 @@ function Dashboard() {
 
                     </div>
                 )}
-
             </div>
         </div>
     );
