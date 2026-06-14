@@ -38,11 +38,7 @@ const analyzeResume = async (
 
 ) => {
 
-
-
     try {
-
-
 
         const prompt = `
 

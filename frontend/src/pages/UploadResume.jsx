@@ -67,12 +67,6 @@ function UploadResume() {
                         description for personalized AI analysis.
                     </p>
 
-                    <input
-                        type="file"
-                        accept=".pdf,.doc,.docx"
-                        onChange={handleFileChange}
-                        className="w-full border p-3 rounded-lg mb-3"
-                    />
 
                     {file && (
                         <p className="text-sm text-green-600 mb-4">

@@ -69,7 +69,12 @@ function Navbar() {
                                 >
                                     Upload Resume
                                 </Link>
-
+                                <Link
+                                    to="/login"
+                                    className="hover:text-purple-600"
+                                >
+                                    Login
+                                </Link>
                                 <Link
                                     to="/mock-interview"
                                     className="hover:text-purple-600"
