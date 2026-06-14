@@ -5,129 +5,104 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 function UploadResume() {
-
     const navigate = useNavigate();
 
     const [file, setFile] = useState(null);
-    const [analysis, setAnalysis] = useState("");
+    const [jobDescription, setJobDescription] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    // File selection
     const handleFileChange = (e) => {
-
         setFile(e.target.files[0]);
     };
 
-    // Upload function
     const handleUpload = async () => {
-
         if (!file) {
-
-            alert("Select resume first");
+            alert("Please select a resume first.");
             return;
         }
 
         try {
+            setLoading(true);
 
             const formData = new FormData();
 
             formData.append("resume", file);
+
+            if (jobDescription.trim()) {
+                formData.append("jobDescription", jobDescription);
+            }
 
             const response = await axios.post(
                 "https://ai-resumeanalyzer-epjv.onrender.com/api/upload/resume",
                 formData,
                 {
                     headers: {
-                        Authorization:
-                            localStorage.getItem("token")
-                    }
+                        Authorization: localStorage.getItem("token"),
+                    },
                 }
             );
 
-            // Store analysis
-            setAnalysis(response.data.aiFeedback);
-
-            // Success message
-            alert(response.data.message);
-
-            // Redirect to dashboard
-            navigate("/dashboard");
-
+           alert(response.data.message);
+           navigate("/dashboard");
         } catch (error) {
-
-            console.log(error);
-
+            console.error(error);
             alert("Upload failed");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-
         <div className="min-h-screen bg-gray-100">
-
             <Navbar />
 
             <div className="flex justify-center mt-10 px-4">
-
                 <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-2xl">
-
-                    {/* Heading */}
-                    <h1 className="text-3xl font-bold mb-5 text-center">
+                    <h1 className="text-3xl font-bold mb-2 text-center">
                         Upload Resume
                     </h1>
 
-                    {/* File Input */}
+                    <p className="text-center text-gray-500 mb-6">
+                        Upload your resume and optionally paste a job
+                        description for personalized AI analysis.
+                    </p>
+
                     <input
                         type="file"
+                        accept=".pdf,.doc,.docx"
                         onChange={handleFileChange}
-                        className="w-full border p-2 rounded-lg mb-4"
+                        className="w-full border p-3 rounded-lg mb-3"
                     />
 
-                    {/* Upload Button */}
+                    {file && (
+                        <p className="text-sm text-green-600 mb-4">
+                            Selected: {file.name}
+                        </p>
+                    )}
+
+                    <label className="block font-medium mb-2">
+                        Job Description (Optional)
+                    </label>
+
+                    <textarea
+                        value={jobDescription}
+                        onChange={(e) =>
+                            setJobDescription(e.target.value)
+                        }
+                        placeholder="Paste the job description here..."
+                        rows={8}
+                        className="w-full border p-3 rounded-lg mb-5 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+
                     <button
                         onClick={handleUpload}
-                        className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition"
+                        disabled={loading}
+                        className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Upload Resume
+                        {loading ? "Analyzing..." : "Analyze Resume"}
                     </button>
-
-                    {/* AI Analysis Section */}
-                    {
-                        analysis && (
-
-                            <div className="mt-6 space-y-4">
-
-                                {/* Title Card */}
-                                <div className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white p-4 rounded-xl shadow">
-
-                                    <h2 className="text-2xl font-bold text-center">
-                                        Resume Analysis
-                                    </h2>
-
-                                    <p className="text-center text-sm text-purple-100 mt-1">
-                                        AI-powered feedback
-                                    </p>
-
-                                </div>
-
-                                {/* Analysis Content */}
-                                <div className="bg-gray-50 p-4 rounded-xl shadow border">
-
-                                    <div className="whitespace-pre-wrap leading-7 text-gray-800">
-
-                                        {analysis}
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-                        )
-                    }
-
                 </div>
-
             </div>
-
         </div>
     );
 }
