@@ -1,4 +1,3 @@
-console.log("=== NEW JSON ANALYZER LOADED ===");
 
 const {
     GoogleGenerativeAI
