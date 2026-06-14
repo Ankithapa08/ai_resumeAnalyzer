@@ -30,24 +30,18 @@ function Dashboard() {
             setLoading(false);
         }
     };
+
     const latestAnalysis = analyses[0];
-    const parseAiFeedback = (aiFeedback) => {
-        if (typeof aiFeedback === "object" && aiFeedback !== null) {
-            return aiFeedback;
-        }
-        if (typeof aiFeedback === "string") {
-            try {
-                return JSON.parse(aiFeedback);
-            } catch (error) {
-                console.log(
-                    "Unable to parse aiFeedback string:",
-                    error
-                );
-            }
-        }
-        return null;
-    };
-    const feedback = parseAiFeedback(latestAnalysis?.aiFeedback);
+
+    const feedback =
+        latestAnalysis &&
+        typeof latestAnalysis.aiFeedback === "object"
+            ? latestAnalysis.aiFeedback
+            : null;
+
+    const isLegacyAnalysis =
+        typeof latestAnalysis?.aiFeedback === "string";
+
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-100">
@@ -71,52 +65,50 @@ function Dashboard() {
             <Navbar />
 
             <div className="p-4 sm:p-6 md:p-8">
-                {/* Heading */}
+
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-8">
                     Dashboard
                 </h1>
 
-                {/* Stats Cards */}
+                {/* Stats */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-                    {/* Upload Count */}
+
                     <div className="bg-white p-6 rounded-2xl shadow-lg">
-                        <h2 className="text-lg sm:text-xl font-semibold text-gray-600 mb-2">
+                        <h2 className="text-lg font-semibold text-gray-600 mb-2">
                             Upload Count
                         </h2>
 
-                        <p className="text-3xl sm:text-4xl font-bold text-purple-600">
+                        <p className="text-4xl font-bold text-purple-600">
                             {analyses.length}
                         </p>
                     </div>
 
-                    {/* Latest Resume */}
                     <div className="bg-white p-6 rounded-2xl shadow-lg">
-                        <h2 className="text-lg sm:text-xl font-semibold text-gray-600 mb-2">
+                        <h2 className="text-lg font-semibold text-gray-600 mb-2">
                             Latest Resume
                         </h2>
 
-                        <p className="text-base sm:text-lg font-bold text-green-600">
+                        <p className="text-lg font-bold text-green-600">
                             {latestAnalysis
                                 ? "Resume Available"
                                 : "No Resume Uploaded"}
                         </p>
                     </div>
 
-                    {/* Recent Activity */}
                     <div className="bg-white p-6 rounded-2xl shadow-lg">
-                        <h2 className="text-lg sm:text-xl font-semibold text-gray-600 mb-2">
+                        <h2 className="text-lg font-semibold text-gray-600 mb-2">
                             Recent Activity
                         </h2>
 
-                        <p className="text-gray-700 text-sm sm:text-base">
+                        <p className="text-gray-700">
                             {latestAnalysis
                                 ? "Resume analyzed successfully"
                                 : "No activity yet"}
                         </p>
                     </div>
+
                 </div>
 
-                {/* No Analysis State */}
                 {!latestAnalysis && (
                     <div className="bg-white p-10 rounded-2xl shadow-lg text-center">
                         <h2 className="text-2xl font-bold text-gray-700 mb-3">
@@ -124,17 +116,16 @@ function Dashboard() {
                         </h2>
 
                         <p className="text-gray-500">
-                            Upload your first resume to receive AI-powered
-                            feedback and recommendations.
+                            Upload your first resume to receive AI-powered feedback.
                         </p>
                     </div>
                 )}
 
-                {/* Latest Analysis */}
                 {latestAnalysis && (
-                    <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-lg">
+                    <div className="bg-white p-6 rounded-2xl shadow-lg">
+
                         {/* Header */}
-                        <div className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white p-4 rounded-xl mb-6">
+                        <div className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white p-5 rounded-xl mb-6">
                             <h2 className="text-2xl font-bold">
                                 Latest Resume Analysis
                             </h2>
@@ -145,125 +136,124 @@ function Dashboard() {
                         </div>
 
                         {/* Upload Date */}
-                        {latestAnalysis.createdAt && (
-                            <p className="text-sm text-gray-500 mb-4">
-                                Uploaded on{" "}
-                                {new Date(
-                                    latestAnalysis.createdAt
-                                ).toLocaleString()}
-                            </p>
+                        <p className="text-sm text-gray-500 mb-6">
+                            Uploaded on{" "}
+                            {new Date(
+                                latestAnalysis.createdAt
+                            ).toLocaleString()}
+                        </p>
+
+                        {/* Legacy Analysis */}
+                        {isLegacyAnalysis && (
+                            <div className="bg-yellow-50 border border-yellow-200 p-5 rounded-xl">
+                                <h3 className="text-xl font-bold mb-4">
+                                    Legacy Analysis
+                                </h3>
+
+                                <div className="whitespace-pre-wrap text-gray-700 leading-7">
+                                    {latestAnalysis.aiFeedback}
+                                </div>
+                            </div>
                         )}
 
-                        {/* Analysis Content */}
-                       <div className="space-y-6">
-    {/* AI Summary */}
-    <div className="bg-blue-50 border border-blue-200 p-5 rounded-xl">
-        <h3 className="text-xl font-bold mb-2">
-            AI Summary
-        </h3>
-               
-        <p className="text-gray-700">
-            {feedback?.summary ||
-                "Upload a newly analyzed resume to view the summary"}
-        </p>
-    </div>
+                        {/* New JSON Analysis */}
+                        {!isLegacyAnalysis && feedback && (
+                            <div className="space-y-6">
 
-    {/* Scores */}
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* Summary */}
+                                <div className="bg-blue-50 border border-blue-200 p-5 rounded-xl">
+                                    <h3 className="text-xl font-bold mb-2">
+                                        AI Summary
+                                    </h3>
 
-        <div className="bg-purple-100 p-5 rounded-xl">
-            <h3 className="text-gray-600 font-medium">
-                ATS Score
-            </h3>
+                                    <p className="text-gray-700">
+                                        {feedback.summary}
+                                    </p>
+                                </div>
 
-            <p className="text-4xl font-bold text-purple-700">
-                {feedback?.atsScore || 0}%
-            </p>
-        </div>
+                                {/* Scores */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-        <div className="bg-green-100 p-5 rounded-xl">
-            <h3 className="text-gray-600 font-medium">
-                Job Match Score
-            </h3>
+                                    <div className="bg-purple-100 p-5 rounded-xl">
+                                        <h3 className="text-gray-600 font-medium">
+                                            ATS Score
+                                        </h3>
 
-            <p className="text-4xl font-bold text-green-700">
-                {feedback?.jobMatchScore || 0}%
-            </p>
-        </div>
+                                        <p className="text-4xl font-bold text-purple-700">
+                                            {feedback.atsScore}%
+                                        </p>
+                                    </div>
 
-    </div>
+                                    <div className="bg-green-100 p-5 rounded-xl">
+                                        <h3 className="text-gray-600 font-medium">
+                                            Job Match Score
+                                        </h3>
 
-    {/* Strengths */}
-    <div className="bg-gray-50 border p-5 rounded-xl">
-        <h3 className="text-xl font-bold mb-3">
-            Strengths
-        </h3>
+                                        <p className="text-4xl font-bold text-green-700">
+                                            {feedback.jobMatchScore}%
+                                        </p>
+                                    </div>
 
-        <ul className="list-disc pl-6 space-y-2">
-            {feedback?.strengths?.map(
-                (item, index) => (
-                    <li key={index}>
-                        {item}
-                    </li>
-                )
-            )}
-        </ul>
-    </div>
+                                </div>
 
-    {/* Weaknesses */}
-    <div className="bg-gray-50 border p-5 rounded-xl">
-        <h3 className="text-xl font-bold mb-3">
-            Weaknesses
-        </h3>
+                                {/* Strengths */}
+                                <div className="bg-gray-50 border p-5 rounded-xl">
+                                    <h3 className="text-xl font-bold mb-3">
+                                        Strengths
+                                    </h3>
 
-        <ul className="list-disc pl-6 space-y-2">
-            {feedback?.weaknesses?.map(
-                (item, index) => (
-                    <li key={index}>
-                        {item}
-                    </li>
-                )
-            )}
-        </ul>
-    </div>
+                                    <ul className="list-disc pl-6 space-y-2">
+                                        {feedback.strengths?.map((item, index) => (
+                                            <li key={index}>{item}</li>
+                                        ))}
+                                    </ul>
+                                </div>
 
-    {/* Missing Skills */}
-    <div className="bg-gray-50 border p-5 rounded-xl">
-        <h3 className="text-xl font-bold mb-3">
-            Missing Skills
-        </h3>
+                                {/* Weaknesses */}
+                                <div className="bg-gray-50 border p-5 rounded-xl">
+                                    <h3 className="text-xl font-bold mb-3">
+                                        Weaknesses
+                                    </h3>
 
-        <ul className="list-disc pl-6 space-y-2">
-            {feedback?.missingSkills?.map(
-                (item, index) => (
-                    <li key={index}>
-                        {item}
-                    </li>
-                )
-            )}
-        </ul>
-    </div>
+                                    <ul className="list-disc pl-6 space-y-2">
+                                        {feedback.weaknesses?.map((item, index) => (
+                                            <li key={index}>{item}</li>
+                                        ))}
+                                    </ul>
+                                </div>
 
-    {/* Improvements */}
-    <div className="bg-gray-50 border p-5 rounded-xl">
-        <h3 className="text-xl font-bold mb-3">
-            Suggested Improvements
-        </h3>
+                                {/* Missing Skills */}
+                                <div className="bg-gray-50 border p-5 rounded-xl">
+                                    <h3 className="text-xl font-bold mb-3">
+                                        Missing Skills
+                                    </h3>
 
-        <ul className="list-disc pl-6 space-y-2">
-            {feedback?.improvements?.map(
-                (item, index) => (
-                    <li key={index}>
-                        {item}
-                    </li>
-                )
-            )}
-        </ul>
-    </div>
+                                    <ul className="list-disc pl-6 space-y-2">
+                                        {feedback.missingSkills?.map((item, index) => (
+                                            <li key={index}>{item}</li>
+                                        ))}
+                                    </ul>
+                                </div>
 
-</div>
+                                {/* Improvements */}
+                                <div className="bg-gray-50 border p-5 rounded-xl">
+                                    <h3 className="text-xl font-bold mb-3">
+                                        Suggested Improvements
+                                    </h3>
+
+                                    <ul className="list-disc pl-6 space-y-2">
+                                        {feedback.improvements?.map((item, index) => (
+                                            <li key={index}>{item}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                            </div>
+                        )}
+
                     </div>
                 )}
+
             </div>
         </div>
     );
