@@ -1,3 +1,5 @@
+console.log("=== NEW JSON ANALYZER LOADED ===");
+
 const {
     GoogleGenerativeAI
 } = require("@google/generative-ai");
