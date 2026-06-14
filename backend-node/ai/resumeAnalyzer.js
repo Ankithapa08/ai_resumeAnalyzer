@@ -29,8 +29,16 @@ ${jobDescription}`
         : ""
 }
 
-Return ONLY valid JSON.
+Return ONLY a valid JSON object.
 
+Do not use markdown.
+Do not use \`\`\`json.
+Do not write any explanation.
+Do not write any text before or after the JSON.
+
+The response MUST start with { and end with }.
+
+JSON Format:
 {
   "atsScore": number,
   "jobMatchScore": number,
@@ -74,47 +82,7 @@ const cleanedResponse = response
 console.log("CLEANED RESPONSE:");
 console.log(cleanedResponse);
 
-const parseJson = (text) => {
-    try {
-        return JSON.parse(text);
-    } catch (parseError) {
-        const match = text.match(/\{[\s\S]*\}/);
-        if (match) {
-            return JSON.parse(match[0]);
-        }
-        throw parseError;
-    }
-};
-
-const normalizeNumber = (value) => {
-    const num = Number(value);
-    return Number.isFinite(num)
-        ? Math.min(100, Math.max(0, num))
-        : 0;
-};
-
-const normalizeArray = (value) => {
-    if (Array.isArray(value)) return value;
-    if (typeof value === "string" && value.trim()) {
-        return [value.trim()];
-    }
-    return [];
-};
-
-const parsedResponse = parseJson(cleanedResponse);
-
-return {
-    atsScore: normalizeNumber(parsedResponse.atsScore),
-    jobMatchScore: normalizeNumber(parsedResponse.jobMatchScore),
-    strengths: normalizeArray(parsedResponse.strengths),
-    weaknesses: normalizeArray(parsedResponse.weaknesses),
-    missingSkills: normalizeArray(parsedResponse.missingSkills),
-    improvements: normalizeArray(parsedResponse.improvements),
-    summary:
-        typeof parsedResponse.summary === "string"
-            ? parsedResponse.summary.trim()
-            : ""
-};
+return JSON.parse(cleanedResponse);
 
     } catch (error) {
 
@@ -128,9 +96,7 @@ return {
             missingSkills: [],
             improvements: [
                 "Unable to analyze resume."
-            ],
-            summary:
-                "Unable to analyze resume due to invalid AI response."
+            ]
         };
     }
 };
