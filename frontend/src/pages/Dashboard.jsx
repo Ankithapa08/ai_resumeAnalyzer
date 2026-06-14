@@ -144,13 +144,15 @@ function Dashboard() {
 
                         {/* Analysis Content */}
                        <div className="space-y-6">
-
+console.log(latestAnalysis);
+console.log(latestAnalysis?.aiFeedback);
+        
     {/* AI Summary */}
     <div className="bg-blue-50 border border-blue-200 p-5 rounded-xl">
         <h3 className="text-xl font-bold mb-2">
             AI Summary
         </h3>
-
+               
         <p className="text-gray-700">
             {feedback?.summary ||
                 "Upload a newly analyzed resume to view the summary"}
