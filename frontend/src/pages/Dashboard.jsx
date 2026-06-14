@@ -36,6 +36,8 @@ function Dashboard() {
     typeof latestAnalysis?.aiFeedback === "object"
         ? latestAnalysis.aiFeedback
         : null;
+        console.log("Latest Analysis:", latestAnalysis);
+        console.log("AI Feedback:", latestAnalysis?.aiFeedback);
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-100">
@@ -144,9 +146,6 @@ function Dashboard() {
 
                         {/* Analysis Content */}
                        <div className="space-y-6">
-console.log(latestAnalysis);
-console.log(latestAnalysis?.aiFeedback);
-        
     {/* AI Summary */}
     <div className="bg-blue-50 border border-blue-200 p-5 rounded-xl">
         <h3 className="text-xl font-bold mb-2">
