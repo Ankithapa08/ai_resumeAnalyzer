@@ -5,7 +5,7 @@ import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
 import UploadResume from "./pages/UploadResume";
 import MockInterview from "./pages/MockInterview";
-
+import ResumeHistory from "./pages/ResumeHistory";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -50,7 +50,14 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+        <Route
+    path="/history"
+    element={
+    <ProtectedRoute>
+      <ResumeHistory />
+    </ProtectedRoute>
+  }
+/>
         <Route
           path="/mock-interview"
           element={

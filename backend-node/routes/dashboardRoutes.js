@@ -78,5 +78,43 @@ router.get(
         }
     }
 );
+router.delete(
+    "/delete/:id",
+    authMiddleware,
 
+    async (req, res) => {
+
+        try {
+
+            const analysis =
+                await ResumeAnalysis.findOneAndDelete({
+
+                    _id: req.params.id,
+
+                    userId: req.user.id
+                });
+
+            if (!analysis) {
+
+                return res.status(404).json({
+                    message: "Analysis not found"
+                });
+            }
+
+            res.json({
+                message:
+                    "Analysis deleted successfully"
+            });
+
+        } catch (error) {
+
+            console.log(error);
+
+            res.status(500).json({
+                message:
+                    "Error deleting analysis"
+            });
+        }
+    }
+);
 module.exports = router;

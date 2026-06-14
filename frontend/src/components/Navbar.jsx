@@ -64,7 +64,7 @@ function Navbar() {
                             >
                                 Upload Resume
                             </Link>
-
+                             
                             <Link
                                 to="/chat-resume"
                                 className="hover:text-purple-600 transition"
@@ -78,7 +78,11 @@ function Navbar() {
                             >
                                 Mock Interview
                             </Link>
-
+                            <Link
+                            to="/history"
+                          className="hover:text-purple-600">
+                           Resume History
+                           </Link>
                             <button
                                 onClick={handleLogout}
                                 className="
@@ -180,7 +184,13 @@ function Navbar() {
                             >
                                 Chat Resume
                             </Link>
-
+                            <Link
+                              to="/history"
+                              onClick={() =>
+                                    setMenuOpen(false)
+                                }
+                              className="hover:text-purple-600"> Resume History 
+                             </Link>
                             <Link
                                 to="/mock-interview"
                                 onClick={() =>
