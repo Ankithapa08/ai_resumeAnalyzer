@@ -60,9 +60,20 @@ ${resumeText}
             await model.generateContent(prompt);
 
         const response =
-            result.response.text().trim();
+    result.response.text().trim();
 
-        return JSON.parse(response);
+console.log("RAW GEMINI RESPONSE:");
+console.log(response);
+
+const cleanedResponse = response
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .trim();
+
+console.log("CLEANED RESPONSE:");
+console.log(cleanedResponse);
+
+return JSON.parse(cleanedResponse);
 
     } catch (error) {
 
