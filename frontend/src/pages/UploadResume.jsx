@@ -67,37 +67,68 @@ function UploadResume() {
                         description for personalized AI analysis.
                     </p>
 
+    <div className="mb-5">
+    <input
+        id="resume-upload"
+        type="file"
+        accept=".pdf,.doc,.docx"
+        onChange={handleFileChange}
+        className="hidden"
+    />
 
-                    {file && (
-                        <p className="text-sm text-green-600 mb-4">
-                            Selected: {file.name}
-                        </p>
-                    )}
+    <label
+        htmlFor="resume-upload"
+        className="
+            w-full
+            border
+            border-gray-300
+            rounded-lg
+            p-4
+            flex
+            justify-between
+            items-center
+            cursor-pointer
+            hover:bg-gray-50
+            transition
+        "
+    >
+        <span className="text-gray-600">
+            {file ? file.name : "Select Resume"}
+        </span>
 
-                    <label className="block font-medium mb-2">
-                        Job Description (Optional)
-                    </label>
+        <span className="bg-purple-600 text-white px-4 py-2 rounded-lg">
+            Browse
+        </span>
+    </label>
 
-                    <textarea
-                        value={jobDescription}
-                        onChange={(e) =>
-                            setJobDescription(e.target.value)
-                        }
-                        placeholder="Paste the job description here..."
-                        rows={8}
-                        className="w-full border p-3 rounded-lg mb-5 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500"
+    {file && (
+        <p className="text-green-600 text-sm mt-2">
+            ✓ Resume selected successfully
+        </p>
+    )}
+</div>
+        <label className="block font-medium mb-2">
+               Job Description (Optional)
+            </label>
+            <textarea
+            value={jobDescription}
+              onChange={(e) =>
+              setJobDescription(e.target.value)
+            }
+               placeholder="Paste the job description here..."
+               rows={8}
+              className="w-full border p-3 rounded-lg mb-5 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
-
-                    <button
-                        onClick={handleUpload}
-                        disabled={loading}
-                        className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                <button
+                onClick={handleUpload}
+                 disabled={loading}
+                 className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {loading ? "Analyzing..." : "Analyze Resume"}
-                    </button>
-                </div>
-            </div>
-        </div>
+                {loading ? "Analyzing..." : "Analyze Resume"}
+               </button>
+          </div>
+     </div>
+  </div>
     );
 }
 
