@@ -33,14 +33,29 @@ function Dashboard() {
 
     const latestAnalysis = analyses[0];
 
-    const feedback =
-        latestAnalysis &&
-        typeof latestAnalysis.aiFeedback === "object"
-            ? latestAnalysis.aiFeedback
-            : null;
+    const parseAiFeedback = (aiFeedback) => {
+        if (typeof aiFeedback === "object" && aiFeedback !== null) {
+            return aiFeedback;
+        }
+        if (typeof aiFeedback === "string") {
+            try {
+                const match = aiFeedback.match(/\{[\s\S]*\}/);
+                return JSON.parse(match ? match[0] : aiFeedback);
+            } catch (error) {
+                console.log(
+                    "Unable to parse aiFeedback string:",
+                    error
+                );
+                return null;
+            }
+        }
+        return null;
+    };
 
+    const rawFeedback = latestAnalysis?.aiFeedback;
+    const feedback = parseAiFeedback(rawFeedback);
     const isLegacyAnalysis =
-        typeof latestAnalysis?.aiFeedback === "string";
+        typeof rawFeedback === "string" && !feedback;
 
     if (loading) {
         return (

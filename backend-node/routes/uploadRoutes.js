@@ -63,11 +63,35 @@ router.post(
                 req.body.jobDescription || "";
 
             // AI Analysis
-            const aiFeedback =
+            let aiFeedback =
                 await analyzeResume(
                     resumeText,
                     jobDescription
                 );
+
+            if (typeof aiFeedback === "string") {
+                try {
+                    const match = aiFeedback.match(/\{[\s\S]*\}/);
+                    aiFeedback = JSON.parse(match ? match[0] : aiFeedback);
+                } catch (parseError) {
+                    console.log(
+                        "Unable to parse aiFeedback string:",
+                        parseError
+                    );
+                    aiFeedback = {
+                        atsScore: 0,
+                        jobMatchScore: 0,
+                        strengths: [],
+                        weaknesses: [],
+                        missingSkills: [],
+                        improvements: [
+                            "Unable to analyze resume."
+                        ],
+                        summary:
+                            "Unable to analyze resume due to invalid AI response."
+                    };
+                }
+            }
 
             // Debug Logs
             console.log(
