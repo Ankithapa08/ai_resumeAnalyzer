@@ -10,7 +10,23 @@ const resumeAnalysisSchema =
 
         resumeText: String,
 
-        aiFeedback: String,
+        aiFeedback:{
+            atsScore: Number,
+
+            jobMatchScore: Number,
+
+            strengths: [String],
+
+            weaknesses: [String],
+
+            missingSkills: [String],
+
+            improvements: [String],
+             
+            summary: String
+
+
+        },
 
         createdAt: {
             type: Date,

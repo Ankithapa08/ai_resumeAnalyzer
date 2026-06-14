@@ -38,6 +38,7 @@ function Dashboard() {
         : null;
         console.log("Latest Analysis:", latestAnalysis);
         console.log("AI Feedback:", latestAnalysis?.aiFeedback);
+        console.log("Feedback:", feedback);
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-100">

@@ -9,27 +9,76 @@ const model = genAI.getGenerativeModel({
     model : "gemini-3.1-flash-lite"
 });
 
-const analyzeResume = async(resumeText) =>{
+const analyzeResume = async (
+    resumeText,
+    jobDescription = ""
+) => {
     try {
-    const prompt = `
-    Analyze this resme professionally.
-    Give:
-    1. Resume Score out of 100
-    2. Strengths
-    3. Weaknesses
-    4. Suggested improvements
-    Do not use markdown formatting.
-    Resume:
-    ${resumeText}
-    `;
-    const result = await model.generateContent(prompt);
-    const response = result.response.text();
-    return response;
+
+        const prompt = `
+You are an expert ATS Resume Analyzer.
+
+Analyze the resume professionally.
+
+${
+    jobDescription
+        ? `Compare the resume against this Job Description:
+
+${jobDescription}`
+        : ""
 }
-catch (error){
-    console.log(error);
-    return null;
+
+Return ONLY valid JSON.
+
+{
+  "atsScore": number,
+  "jobMatchScore": number,
+  "strengths": [],
+  "weaknesses": [],
+  "missingSkills": [],
+  "improvements": [],
+  "summary": ""
+
 }
+
+Rules:
+
+- atsScore should be between 0 and 100
+- jobMatchScore should be between 0 and 100
+- If no Job Description is provided, set jobMatchScore to 0
+- missingSkills should be empty if no JD is provided
+- Return only JSON
+- No markdown
+- No explanations
+
+Resume:
+
+${resumeText}
+`;
+
+        const result =
+            await model.generateContent(prompt);
+
+        const response =
+            result.response.text().trim();
+
+        return JSON.parse(response);
+
+    } catch (error) {
+
+        console.log(error);
+
+        return {
+            atsScore: 0,
+            jobMatchScore: 0,
+            strengths: [],
+            weaknesses: [],
+            missingSkills: [],
+            improvements: [
+                "Unable to analyze resume."
+            ]
+        };
+    }
 };
 
 module.exports = analyzeResume;
