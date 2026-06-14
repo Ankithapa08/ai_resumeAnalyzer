@@ -5,14 +5,17 @@ const fs = require("fs");
 
 const router = express.Router();
 
+// Create uploads folder if it doesn't exist
 if (!fs.existsSync("uploads")) {
     fs.mkdirSync("uploads");
 }
 
+// Multer Storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, "uploads/");
     },
+
     filename: (req, file, cb) => {
         cb(
             null,
@@ -23,6 +26,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+// Imports
 const parseResume =
     require("../ai/resumeParser");
 
@@ -32,6 +36,7 @@ const analyzeResume =
 const ResumeAnalysis =
     require("../models/ResumeAnalysis");
 
+// Upload Resume Route
 router.post(
     "/resume",
     authMiddleware,
@@ -41,47 +46,81 @@ router.post(
 
         try {
 
+            if (!req.file) {
+                return res.status(400).json({
+                    message: "No resume uploaded"
+                });
+            }
+
             const filePath = req.file.path;
 
+            // Extract Resume Text
             const resumeText =
                 await parseResume(filePath);
 
+            // Job Description (Optional)
             const jobDescription =
                 req.body.jobDescription || "";
 
+            // AI Analysis
             const aiFeedback =
                 await analyzeResume(
                     resumeText,
                     jobDescription
                 );
 
-            await ResumeAnalysis.create({
+            // Debug Logs
+            console.log(
+                "AI FEEDBACK TYPE:",
+                typeof aiFeedback
+            );
 
-                userId: req.user.id,
-                resumeName: req.file.originalname,
+            console.log(
+                "AI FEEDBACK:",
+                JSON.stringify(
+                    aiFeedback,
+                    null,
+                    2
+                )
+            );
 
-                resumeText,
+            // Save Analysis
+            const savedAnalysis =
+                await ResumeAnalysis.create({
 
-                aiFeedback
-            });
+                    userId: req.user.id,
 
-            res.json({
+                    resumeName:
+                        req.file.originalname,
+
+                    resumeText,
+
+                    aiFeedback
+
+                });
+
+            res.status(200).json({
+
                 message:
                     "Resume uploaded successfully",
 
-                extractedText:
-                    resumeText,
+                analysisId:
+                    savedAnalysis._id,
 
                 aiFeedback
+
             });
 
         } catch (error) {
 
-            console.log(error);
+            console.error(
+                "Resume Upload Error:",
+                error
+            );
 
             res.status(500).json({
                 message:
-                    "Error extracting resume text"
+                    "Error analyzing resume"
             });
         }
     }
