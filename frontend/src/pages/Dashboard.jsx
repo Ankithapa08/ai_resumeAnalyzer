@@ -31,10 +31,23 @@ function Dashboard() {
         }
     };
     const latestAnalysis = analyses[0];
-    const feedback =
-    typeof latestAnalysis?.aiFeedback === "object"
-        ? latestAnalysis.aiFeedback
-        : null;
+    const parseAiFeedback = (aiFeedback) => {
+        if (typeof aiFeedback === "object" && aiFeedback !== null) {
+            return aiFeedback;
+        }
+        if (typeof aiFeedback === "string") {
+            try {
+                return JSON.parse(aiFeedback);
+            } catch (error) {
+                console.log(
+                    "Unable to parse aiFeedback string:",
+                    error
+                );
+            }
+        }
+        return null;
+    };
+    const feedback = parseAiFeedback(latestAnalysis?.aiFeedback);
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-100">
