@@ -136,7 +136,8 @@ router.post(
                     userId: req.user.id,
                     resumeAnalysisId: savedAnalysis._id,
                     chunk: chunks[i],
-                    chunkIndex: i
+                    chunkIndex: i,
+                    embedding
                 });
             }    
 

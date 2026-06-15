@@ -1,57 +1,75 @@
 import { useState } from "react";
-
 import axios from "axios";
 
 import Navbar from "../components/Navbar";
 
 function ChatResume() {
 
-    const [question, setQuestion] =
-    useState("");
+    const [question, setQuestion] = useState("");
 
-    const [answer, setAnswer] =
-    useState("");
+    const [messages, setMessages] = useState([]);
 
-    const [loading, setLoading] =
-    useState(false);
+    const [loading, setLoading] = useState(false);
 
     const askQuestion = async () => {
 
-        if (!question) {
-
-            alert("Enter question");
-
+        if (!question.trim()) {
             return;
         }
+
+        const userMessage = {
+            role: "user",
+            text: question
+        };
+
+        setMessages(prev => [
+            ...prev,
+            userMessage
+        ]);
 
         try {
 
             setLoading(true);
 
             const response =
-            await axios.post(
+                await axios.post(
 
-                "https://YOUR_RENDER_URL/api/chat/ask",
+                    "https://ai-resumeanalyzer-epjv.onrender.com/api/chat/resume-chat",
 
-                { question },
+                    {
+                        question
+                    },
 
-                {
-                    headers: {
-                        Authorization:
-                        localStorage.getItem("token")
+                    {
+                        headers: {
+                            Authorization:
+                                localStorage.getItem("token")
+                        }
                     }
-                }
-            );
+                );
 
-            setAnswer(
-                response.data.answer
-            );
+            setMessages(prev => [
+                ...prev,
+                {
+                    role: "ai",
+                    text: response.data.answer
+                }
+            ]);
+
+            setQuestion("");
 
         } catch (error) {
 
             console.log(error);
 
-            alert("Failed to get answer");
+            setMessages(prev => [
+                ...prev,
+                {
+                    role: "ai",
+                    text:
+                        "Failed to get answer."
+                }
+            ]);
 
         } finally {
 
@@ -65,84 +83,102 @@ function ChatResume() {
 
             <Navbar />
 
-            <div className="
-                p-4 sm:p-8
-                max-w-4xl
-                mx-auto
-            ">
+            <div className="max-w-4xl mx-auto p-4 sm:p-8">
 
-                <h1 className="
-                    text-3xl
-                    font-bold
-                    mb-6
-                ">
+                <h1 className="text-3xl font-bold mb-6">
                     Chat With Resume
                 </h1>
 
-                <textarea
-                    placeholder="
-Ask anything about your resume...
-                    "
-                    value={question}
-                    onChange={(e) =>
-                        setQuestion(e.target.value)
-                    }
-                    className="
-                        w-full
-                        border
-                        p-4
-                        rounded-xl
-                        h-32
-                        mb-4
-                    "
-                />
+                <div className="bg-white rounded-2xl shadow p-6 min-h-[500px]">
 
-                <button
-                    onClick={askQuestion}
-                    className="
-                        bg-purple-600
-                        text-white
-                        px-6
-                        py-3
-                        rounded-lg
-                    "
-                >
-                    {
-                        loading
-                        ? "Thinking..."
-                        : "Ask AI"
-                    }
-                </button>
+                    <div className="space-y-4 mb-6 max-h-[400px] overflow-y-auto">
 
-                {
-                    answer && (
+                        {
+                            messages.length === 0 && (
 
-                        <div className="
-                            mt-8
-                            bg-white
-                            p-6
-                            rounded-2xl
-                            shadow
-                        ">
+                                <p className="text-gray-500">
+                                    Ask questions about your resume.
+                                </p>
+                            )
+                        }
 
-                            <h2 className="
-                                text-2xl
-                                font-bold
-                                mb-4
-                            ">
-                                AI Answer
-                            </h2>
+                        {
+                            messages.map(
+                                (message, index) => (
 
-                            <p className="
-                                whitespace-pre-wrap
-                                leading-7
-                            ">
-                                {answer}
-                            </p>
+                                    <div
+                                        key={index}
+                                        className={
+                                            message.role === "user"
+                                                ? "flex justify-end"
+                                                : "flex justify-start"
+                                        }
+                                    >
 
-                        </div>
-                    )
-                }
+                                        <div
+                                            className={
+                                                message.role === "user"
+                                                    ? "bg-purple-600 text-white p-3 rounded-xl max-w-[80%]"
+                                                    : "bg-gray-200 text-gray-800 p-3 rounded-xl max-w-[80%]"
+                                            }
+                                        >
+
+                                            {message.text}
+
+                                        </div>
+
+                                    </div>
+                                )
+                            )
+                        }
+
+                        {
+                            loading && (
+
+                                <div className="flex justify-start">
+
+                                    <div className="bg-gray-200 p-3 rounded-xl">
+                                        Thinking...
+                                    </div>
+
+                                </div>
+                            )
+                        }
+
+                    </div>
+
+                    <div className="flex gap-3">
+
+                        <input
+                            type="text"
+                            placeholder="Ask about your resume..."
+                            value={question}
+                            onChange={(e) =>
+                                setQuestion(
+                                    e.target.value
+                                )
+                            }
+                            onKeyDown={(e) => {
+                                if (
+                                    e.key === "Enter"
+                                ) {
+                                    askQuestion();
+                                }
+                            }}
+                            className="flex-1 border p-3 rounded-lg"
+                        />
+
+                        <button
+                            onClick={askQuestion}
+                            disabled={loading}
+                            className="bg-purple-600 text-white px-6 rounded-lg hover:bg-purple-700"
+                        >
+                            Send
+                        </button>
+
+                    </div>
+
+                </div>
 
             </div>
 
