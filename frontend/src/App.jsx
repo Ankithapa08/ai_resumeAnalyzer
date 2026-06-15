@@ -6,7 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import UploadResume from "./pages/UploadResume";
 import MockInterview from "./pages/MockInterview";
 import ResumeHistory from "./pages/ResumeHistory";
-import ChatResume from "./pages/ChatResume";
+import ChatResume from "./pages/chatResume.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
