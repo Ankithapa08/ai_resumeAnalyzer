@@ -1,200 +1,211 @@
-<div className="min-h-screen bg-gray-100">
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-    <Navbar />
+import Navbar from "../components/Navbar";
 
-    <div className="p-4 sm:p-6 md:p-8">
+function ResumeHistory() {
 
-        <h1 className="
-            text-3xl
-            sm:text-4xl
-            font-bold
-            mb-8
-        ">
-            Resume History
-        </h1>
+    const [analyses, setAnalyses] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-        {loading ? (
+    useEffect(() => {
+        fetchHistory();
+    }, []);
 
-            <div className="flex justify-center py-20">
-                <p className="text-lg">
-                    Loading...
-                </p>
-            </div>
+    const fetchHistory = async () => {
 
-        ) : analyses.length === 0 ? (
+        try {
 
-            <div className="
-                bg-white
-                p-8
-                rounded-xl
-                shadow
-                text-center
-            ">
-                No analyses found.
-            </div>
+            const response = await axios.get(
+                "https://ai-resumeanalyzer-epjv.onrender.com/api/dashboard/my-analysis",
+                {
+                    headers: {
+                        Authorization:
+                            localStorage.getItem("token")
+                    }
+                }
+            );
 
-        ) : (
+            setAnalyses(response.data);
 
-            <div className="grid gap-6">
+        } catch (error) {
 
-                {analyses.map(
-                    (analysis) => (
+            console.log(error);
 
-                        <div
-                            key={analysis._id}
-                            className="
-                                bg-white
-                                p-4
-                                sm:p-6
-                                rounded-xl
-                                shadow
-                            "
-                        >
+        } finally {
 
-                            {/* Header */}
-                            <div className="
-                                flex
-                                flex-col
-                                sm:flex-row
-                                sm:justify-between
-                                sm:items-start
-                                gap-4
-                            ">
+            setLoading(false);
+        }
+    };
 
-                                <div className="min-w-0">
+    const deleteAnalysis = async (id) => {
 
-                                    <h2 className="
-                                        text-lg
-                                        sm:text-xl
-                                        font-bold
-                                        break-words
-                                    ">
-                                        {
-                                            analysis.resumeName ||
-                                            "Resume"
-                                        }
-                                    </h2>
+        const confirmDelete =
+            window.confirm(
+                "Delete this analysis?"
+            );
 
-                                    <p className="
-                                        text-gray-500
-                                        mt-1
-                                        text-sm
-                                    ">
-                                        {
-                                            new Date(
-                                                analysis.createdAt
-                                            ).toLocaleString()
-                                        }
-                                    </p>
+        if (!confirmDelete) return;
 
-                                </div>
+        try {
 
-                                <button
-                                    onClick={() =>
-                                        deleteAnalysis(
-                                            analysis._id
-                                        )
-                                    }
+            await axios.delete(
+                `https://ai-resumeanalyzer-epjv.onrender.com/api/dashboard/delete/${id}`,
+                {
+                    headers: {
+                        Authorization:
+                            localStorage.getItem("token")
+                    }
+                }
+            );
+
+            setAnalyses(
+                analyses.filter(
+                    item => item._id !== id
+                )
+            );
+
+        } catch (error) {
+
+            console.log(error);
+
+            alert("Delete failed");
+        }
+    };
+
+    return (
+        <div className="min-h-screen bg-gray-100">
+
+            <Navbar />
+
+            <div className="p-6">
+
+                <h1 className="text-4xl font-bold mb-8">
+                    Resume History
+                </h1>
+
+                {loading ? (
+
+                    <p>Loading...</p>
+
+                ) : analyses.length === 0 ? (
+
+                    <div className="bg-white p-8 rounded-xl shadow">
+                        No analyses found.
+                    </div>
+
+                ) : (
+
+                    <div className="grid gap-6">
+
+                        {analyses.map(
+                            (analysis) => (
+
+                                <div
+                                    key={analysis._id}
                                     className="
-                                        bg-red-500
-                                        text-white
-                                        px-4
-                                        py-2
-                                        rounded-lg
-                                        hover:bg-red-600
-                                        w-full
-                                        sm:w-auto
+                                        bg-white
+                                        p-6
+                                        rounded-xl
+                                        shadow
                                     "
                                 >
-                                    Delete
-                                </button>
 
-                            </div>
+                                    <div className="flex justify-between items-start">
 
-                            {/* Scores */}
-                            <div className="
-                                grid
-                                grid-cols-1
-                                md:grid-cols-2
-                                gap-4
-                                mt-5
-                            ">
+                                        <div>
 
-                                <div className="
-                                    bg-purple-100
-                                    p-4
-                                    rounded-lg
-                                    text-center
-                                ">
-                                    <p className="text-gray-600">
-                                        ATS Score
-                                    </p>
+                                            <h2 className="text-xl font-bold">
+                                                {
+                                                    analysis.resumeName ||
+                                                    "Resume"
+                                                }
+                                            </h2>
 
-                                    <p className="
-                                        text-3xl
-                                        font-bold
-                                        text-purple-700
-                                    ">
-                                        {
-                                            analysis.aiFeedback?.atsScore || 0
-                                        }%
-                                    </p>
+                                            <p className="text-gray-500 mt-1">
+                                                {
+                                                    new Date(
+                                                        analysis.createdAt
+                                                    ).toLocaleString()
+                                                }
+                                            </p>
+
+                                        </div>
+
+                                        <button
+                                            onClick={() =>
+                                                deleteAnalysis(
+                                                    analysis._id
+                                                )
+                                            }
+                                            className="
+                                                bg-red-500
+                                                text-white
+                                                px-4
+                                                py-2
+                                                rounded-lg
+                                                hover:bg-red-600
+                                            "
+                                        >
+                                            Delete
+                                        </button>
+
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-4 mt-5">
+
+                                        <div className="bg-purple-100 p-4 rounded-lg">
+                                            <p className="text-gray-600">
+                                                ATS Score
+                                            </p>
+
+                                            <p className="text-3xl font-bold text-purple-700">
+                                                {
+                                                    analysis.aiFeedback?.atsScore || 0
+                                                }%
+                                            </p>
+                                        </div>
+
+                                        <div className="bg-green-100 p-4 rounded-lg">
+                                            <p className="text-gray-600">
+                                                Job Match Score
+                                            </p>
+
+                                            <p className="text-3xl font-bold text-green-700">
+                                                {
+                                                    analysis.aiFeedback?.jobMatchScore || 0
+                                                }%
+                                            </p>
+                                        </div>
+
+                                    </div>
+
+                                    <div className="mt-5">
+
+                                        <h3 className="font-bold mb-2">
+                                            Summary
+                                        </h3>
+
+                                        <p className="text-gray-700">
+                                            {
+                                                analysis.aiFeedback?.summary ||
+                                                "No summary available"
+                                            }
+                                        </p>
+
+                                    </div>
+
                                 </div>
+                            )
+                        )}
 
-                                <div className="
-                                    bg-green-100
-                                    p-4
-                                    rounded-lg
-                                    text-center
-                                ">
-                                    <p className="text-gray-600">
-                                        Job Match Score
-                                    </p>
-
-                                    <p className="
-                                        text-3xl
-                                        font-bold
-                                        text-green-700
-                                    ">
-                                        {
-                                            analysis.aiFeedback?.jobMatchScore || 0
-                                        }%
-                                    </p>
-                                </div>
-
-                            </div>
-
-                            {/* Summary */}
-                            <div className="mt-5">
-
-                                <h3 className="
-                                    font-bold
-                                    mb-2
-                                    text-lg
-                                ">
-                                    Summary
-                                </h3>
-
-                                <p className="
-                                    text-gray-700
-                                    leading-7
-                                    break-words
-                                ">
-                                    {
-                                        analysis.aiFeedback?.summary ||
-                                        "No summary available"
-                                    }
-                                </p>
-
-                            </div>
-
-                        </div>
-                    )
+                    </div>
                 )}
 
             </div>
-        )}
 
-    </div>
+        </div>
+    );
+}
 
-</div>
+export default ResumeHistory;
