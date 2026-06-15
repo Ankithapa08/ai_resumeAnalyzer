@@ -36,6 +36,13 @@ const analyzeResume =
 const ResumeAnalysis =
     require("../models/ResumeAnalysis");
 
+const chunkResume =
+require("../utils/chunkResume");
+
+const ResumeChunk =
+require("../models/ResumeChunk");
+
+
 // Upload Resume Route
 router.post(
     "/resume",
@@ -122,6 +129,16 @@ router.post(
                     aiFeedback
 
                 });
+              
+            const chunks = chunkResume(resumeText);
+            for(let i = 0; i < chunks.length;i++){
+                await ResumeChunk.create({
+                    userId: req.user.id,
+                    resumeAnalysisId: savedAnalysis._id,
+                    chunk: chunks[i],
+                    chunkIndex: i
+                });
+            }    
 
             res.status(200).json({
 
@@ -149,5 +166,6 @@ router.post(
         }
     }
 );
+
 
 module.exports = router;
