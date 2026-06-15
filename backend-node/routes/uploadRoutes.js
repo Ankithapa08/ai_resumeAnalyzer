@@ -5,13 +5,14 @@ const fs = require("fs");
 
 const router = express.Router();
 
-// Create uploads folder if it doesn't exist
+// Create uploads folder
 if (!fs.existsSync("uploads")) {
     fs.mkdirSync("uploads");
 }
 
 // Multer Storage
 const storage = multer.diskStorage({
+
     destination: (req, file, cb) => {
         cb(null, "uploads/");
     },
@@ -19,12 +20,16 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => {
         cb(
             null,
-            Date.now() + "-" + file.originalname
+            Date.now() +
+            "-" +
+            file.originalname
         );
     }
+
 });
 
-const upload = multer({ storage });
+const upload =
+    multer({ storage });
 
 // Imports
 const parseResume =
@@ -33,15 +38,17 @@ const parseResume =
 const analyzeResume =
     require("../ai/resumeAnalyzer");
 
+const generateEmbedding =
+    require("../ai/generateEmbedding");
+
+const chunkResume =
+    require("../utils/chunkResume");
+
 const ResumeAnalysis =
     require("../models/ResumeAnalysis");
 
-const chunkResume =
-require("../utils/chunkResume");
-
 const ResumeChunk =
-require("../models/ResumeChunk");
-
+    require("../models/ResumeChunk");
 
 // Upload Resume Route
 router.post(
@@ -54,18 +61,23 @@ router.post(
         try {
 
             if (!req.file) {
+
                 return res.status(400).json({
-                    message: "No resume uploaded"
+                    message:
+                        "No resume uploaded"
                 });
             }
 
-            const filePath = req.file.path;
+            const filePath =
+                req.file.path;
 
             // Extract Resume Text
             const resumeText =
-                await parseResume(filePath);
+                await parseResume(
+                    filePath
+                );
 
-            // Job Description (Optional)
+            // Optional Job Description
             const jobDescription =
                 req.body.jobDescription || "";
 
@@ -76,50 +88,60 @@ router.post(
                     jobDescription
                 );
 
-            if (typeof aiFeedback === "string") {
+            // Handle string response
+            if (
+                typeof aiFeedback ===
+                "string"
+            ) {
+
                 try {
-                    const match = aiFeedback.match(/\{[\s\S]*\}/);
-                    aiFeedback = JSON.parse(match ? match[0] : aiFeedback);
+
+                    const match =
+                        aiFeedback.match(
+                            /\{[\s\S]*\}/
+                        );
+
+                    aiFeedback =
+                        JSON.parse(
+                            match
+                                ? match[0]
+                                : aiFeedback
+                        );
+
                 } catch (parseError) {
+
                     console.log(
-                        "Unable to parse aiFeedback string:",
+                        "AI Parse Error:",
                         parseError
                     );
+
                     aiFeedback = {
+
                         atsScore: 0,
+
                         jobMatchScore: 0,
+
                         strengths: [],
+
                         weaknesses: [],
+
                         missingSkills: [],
-                        improvements: [
-                            "Unable to analyze resume."
-                        ],
+
+                        improvements: [],
+
                         summary:
-                            "Unable to analyze resume due to invalid AI response."
+                            "Unable to analyze resume."
+
                     };
                 }
             }
 
-            // Debug Logs
-            console.log(
-                "AI FEEDBACK TYPE:",
-                typeof aiFeedback
-            );
-
-            console.log(
-                "AI FEEDBACK:",
-                JSON.stringify(
-                    aiFeedback,
-                    null,
-                    2
-                )
-            );
-
-            // Save Analysis
+            // Save Resume Analysis
             const savedAnalysis =
                 await ResumeAnalysis.create({
 
-                    userId: req.user.id,
+                    userId:
+                        req.user.id,
 
                     resumeName:
                         req.file.originalname,
@@ -129,17 +151,61 @@ router.post(
                     aiFeedback
 
                 });
-              
-            const chunks = chunkResume(resumeText);
-            for(let i = 0; i < chunks.length;i++){
+
+            // Delete previous chunks
+            await ResumeChunk.deleteMany({
+
+                userId:
+                    req.user.id
+
+            });
+
+            // Create fresh chunks
+            const chunks =
+                chunkResume(
+                    resumeText
+                );
+
+            console.log(
+                "Total Chunks:",
+                chunks.length
+            );
+
+            // Generate embeddings
+            for (
+                let i = 0;
+                i < chunks.length;
+                i++
+            ) {
+
+                const embedding =
+                    await generateEmbedding(
+                        chunks[i]
+                    );
+
+                console.log(
+                    `Chunk ${i} Embedding Length:`,
+                    embedding.length
+                );
+
                 await ResumeChunk.create({
-                    userId: req.user.id,
-                    resumeAnalysisId: savedAnalysis._id,
-                    chunk: chunks[i],
-                    chunkIndex: i,
+
+                    userId:
+                        req.user.id,
+
+                    resumeAnalysisId:
+                        savedAnalysis._id,
+
+                    chunk:
+                        chunks[i],
+
+                    chunkIndex:
+                        i,
+
                     embedding
+
                 });
-            }    
+            }
 
             res.status(200).json({
 
@@ -161,12 +227,13 @@ router.post(
             );
 
             res.status(500).json({
+
                 message:
                     "Error analyzing resume"
+
             });
         }
     }
 );
-
 
 module.exports = router;
