@@ -76,7 +76,7 @@ function Navbar() {
                                 to="/mock-interview"
                                 className="hover:text-purple-600 transition"
                             >
-                                Mock Interview
+                                Interview Prep
                             </Link>
                             <Link
                             to="/history"
