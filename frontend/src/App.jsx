@@ -44,7 +44,10 @@ function App() {
         />
          <Route
          path="/chat-resume"
-         element={<ChatResume />}
+         element=
+         {<ProtectedRoute>
+         <ChatResume />
+         </ProtectedRoute>}
         />
         <Route
           path="/upload"
