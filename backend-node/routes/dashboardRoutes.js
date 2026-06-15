@@ -117,4 +117,9 @@ router.delete(
         }
     }
 );
+router.get("/test", (req, res) => {
+    res.json({
+        message: "Delete route deployed"
+    });
+});
 module.exports = router;
